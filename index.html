@@ -95,6 +95,16 @@
           }
         }
       },50)
+
+      document.body.addEventListener("touchstart",function(ev){
+        var vw=document.body.clientWidth
+        var x=ev.touches[0].clientX
+        if (x/vw<0.5){
+          currentKey=37
+        } else  {
+          currentKey=39
+        }
+      })
     </script>
   </body>
 </html>
