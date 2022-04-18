@@ -7,7 +7,7 @@
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
   </head>
   <body>
-    <a-scene background="color: #000000">
+    <a-scene id="scene" background="color: #000000">
       <a-assets>
         <img id="sun" src="images/moon.jpg">
       </a-assets>
@@ -15,22 +15,13 @@
       <a-entity light="type: ambient; color: #fff"></a-entity>
       <a-entity light="type: point; intensity: 1.0; distance: 100; decay: 1; castShadow:true; "  position="0 0 0"></a-entity>
 
-      <a-box src="#sun" class="sphere" color="#888888" depth="100" height="-2" width="6" material="src: images/bg1.png; repeat: 1 1"></a-box>
+      <a-box class="moveback" color="#888888" depth="200" height="-2" width="6" material="src: images/bg1.png; repeat: 200 3"></a-box>
 
 
-      <a-sphere id="sphere-light" class="player" position="0 0 -3" emissive="#ffffff" radius="0.5" color="#ffffff" ></a-sphere>
-      <a-sphere id="sphere" class="player" rotation="0 0 0" position="0 0 -3" src="#sun" material="opacity: 0.4; transparent: true" radius="0.6" color="#FFFF00" animation="easing: linear; property: rotation; to: -360 0 0; loop: true; dur: 5000">
+      <a-sphere class="player" position="0 0 -3" emissive="#ffffff" radius="0.5" color="#ffffff" ></a-sphere>
+      <a-sphere class="player" rotation="0 0 0" position="0 0 -3" src="#sun" material="opacity: 0.4; transparent: true" radius="0.51" color="#FFFF00" animation="easing: linear; property: rotation; to: -360 0 0; loop: true; dur: 3000">
       </a-sphere>
       
-      <a-sphere id="sphere-light" class="sphere" position="0 0 -20" emissive="#f0f000" radius="1" color="#f0f000" ></a-sphere>
-      <a-sphere id="sphere" class="sphere" rotation="0 0 0" position="0 0 -20" src="#sun" material="opacity: 0.4; transparent: true" radius="1.02" color="#FFFF00" animation="easing: linear; property: rotation; to: 360 0 0; loop: true; dur: 5000">
-      </a-sphere>
-      <a-sphere id="sphere-light" class="sphere" position="-2 0 -25" emissive="#008080" radius="1" color="#008080" ></a-sphere>
-      <a-sphere id="sphere" class="sphere" rotation="0 0 0" position="-2 0 -25" src="#sun" material="opacity: 0.4; transparent: true" radius="1.02" color="#FFFF00" animation="easing: linear; property: rotation; to: 360 0 0; loop: true; dur: 5000">
-      </a-sphere>
-      <a-sphere id="sphere-light" class="sphere" position="2 0 -30" emissive="#f000f0" radius="1" color="#f08000" ></a-sphere>
-      <a-sphere id="sphere" class="sphere" rotation="0 0 0" position="2 0 -30" src="#sun" material="opacity: 0.4; transparent: true" radius="1.02" color="#FFFF00" animation="easing: linear; property: rotation; to: 360 0 0; loop: true; dur: 5000">
-      </a-sphere>
 
     </a-scene>
     <script>
@@ -45,8 +36,44 @@
           currentKey = null
         },500)
       })
-      setInterval(function(){
-        var elements = document.querySelectorAll(".sphere")
+      function createSphere (x,z,className){
+        var position = [x,0,z]
+        var colors = ["#ff00ff","#ffff00","#00ffff"]
+        var color = colors[Math.floor(Math.random()*3)]
+        var radius = 1
+        var scene = document.querySelector("#scene")
+
+        var s1=document.createElement("a-sphere");
+        s1.className = className || 'moveback'
+        s1.setAttribute("position",position.join(' '))
+        s1.setAttribute("emmisive",color)
+        s1.setAttribute("color",color)
+        s1.setAttribute("radius",radius)
+        scene.appendChild(s1)
+
+        var s2=document.createElement("a-sphere");
+        s2.className = className || 'moveback'
+        s2.setAttribute("position",position.join(' '))
+        s2.setAttribute("rotation","0 0 0")
+        s2.setAttribute("radius",radius)
+        s2.setAttribute("src","#sun")
+        s2.setAttribute("color",color)
+        s2.setAttribute("material","opacity: 0.4; transparent: true")
+        s2.setAttribute("animation","easing: linear; property: rotation; to: 360 0 0; loop: true; dur: 5000")
+        scene.appendChild(s2)
+
+      }
+      for(var z=-20; z>-100; z-=7){
+        var x = (Math.floor(Math.random()*3)-1)*2
+        createSphere(x,z)
+      }
+      var ticks =0
+      var proc = setInterval(function(){
+        ticks++
+        if (ticks>330){
+          clearInterval(proc)
+        }
+        var elements = document.querySelectorAll(".moveback")
         for(var i=0; i<elements.length; i++){
           var el = elements[i]
           if (el && el.object3D){
@@ -58,16 +85,16 @@
           var el = player[i]
           if (el && el.object3D){
             if (currentKey == 39 && el.object3D.position.x<2){
-              el.object3D.position.x += 0.2;
-              el.object3D.rotation.x += 0.2;
+              el.object3D.position.x += 0.1;
+              el.object3D.rotation.x += 0.1;
             }
             if (currentKey == 37 && el.object3D.position.x>-2){
-              el.object3D.position.x -= 0.2;
-              el.object3D.rotation.x -= 0.2;
+              el.object3D.position.x -= 0.1;
+              el.object3D.rotation.x -= 0.1;
             }
           }
         }
-      },100)
+      },50)
     </script>
   </body>
 </html>
